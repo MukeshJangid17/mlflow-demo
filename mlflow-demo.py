@@ -7,6 +7,14 @@ from sklearn.metrics import accuracy_score
 import mlflow
 import dagshub
 
+mlflow.set_tracking_uri("https://dagshub.com/mukeshjangid7877/mlflow-demo.mlflow")
+dagshub.init(repo_owner='mukeshjangid7877', repo_name='mlflow-demo', mlflow=True)
+
+import mlflow
+with mlflow.start_run():
+  mlflow.log_param('parameter name', 'value')
+  mlflow.log_metric('metric name', 1)
+
 
 # Load the iris dataset
 iris = load_iris()
