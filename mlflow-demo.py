@@ -4,6 +4,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_iris
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
+import seaborn as sns from sklearn.metrics import confusion_matrix
 import mlflow
 import dagshub
 
@@ -48,7 +50,8 @@ with mlflow.start_run():
     mlflow.log_param('n_estimators', n_estimators)
 
     # Create a confusion matrix plot
-    cm = confusion_matrix(y_test, y_pred)
+  
+    cn = ConfusionMatrix(y_test, y_pred)
     plt.figure(figsize=(6,6))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=iris.target_names, yticklabels=iris.target_names)
     plt.ylabel('Actual')
