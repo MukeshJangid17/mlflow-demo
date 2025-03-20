@@ -24,6 +24,48 @@ y = iris.target
 # Split the data into a training and test set
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)  
 
-# Train a RandomForest model
-rf = RandomForestClassifier(n_estimators=100)
-rf.fit(X_train, y_train)
+# Define the parameters for the Random Forest model
+max_depth = 1
+n_estimators = 100
+
+# apply mlflow
+
+mlflow.set_experiment('iris-rf')
+
+with mlflow.start_run():
+
+    rf = RandomForestClassifier(max_depth=max_depth, n_estimators=n_estimators)
+
+    rf.fit(X_train, y_train)
+
+    y_pred = rf.predict(X_test)
+
+    accuracy = accuracy_score(y_test, y_pred)
+
+    mlflow.log_metric('accuracy', accuracy)
+
+    mlflow.log_param('max_depth', max_depth)
+    mlflow.log_param('n_estimators', n_estimators)
+
+    # Create a confusion matrix plot
+    cm = confusion_matrix(y_test, y_pred)
+    plt.figure(figsize=(6,6))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=iris.target_names, yticklabels=iris.target_names)
+    plt.ylabel('Actual')
+    plt.xlabel('Predicted')
+    plt.title('Confusion Matrix')
+    
+    # Save the plot as an artifact
+    plt.savefig("confusion_matrix.png")
+
+    # mlflow code
+    mlflow.log_artifact("confusion_matrix.png")
+
+    mlflow.log_artifact(__file__)
+
+    mlflow.sklearn.log_model(rf, "random forest")
+
+    mlflow.set_tag('author','rahul')
+    mlflow.set_tag('model','random forest')
+
+    print('accuracy', accuracy)
